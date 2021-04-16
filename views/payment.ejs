@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <script src="https://khalti.com/static/khalti-checkout.js"></script>
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
+
+    </head>
+    <body>
+<div class="ui very padded text container segment">
+    <div class="header">
+        
+   <h2>Owner Info:</h2>
+    </br>
+    </div>
+    <div class="content">
+<button  class=" ui basic red button" id="payment-button">Pay with Khalti</button>
+
+    </div>
+    
+</div>
+
+
+<script>
+    
+    var config = {
+        // replace the publicKey with yours
+        "publicKey": "<%=publickey %>",
+        "productIdentity": "1234567890",
+        "productName": "Dragon",
+        "productUrl": "http://gameofthrones.wikia.com/wiki/Dragons",
+        "paymentPreference": [
+            "MOBILE_BANKING",
+            "KHALTI",
+            "EBANKING",
+            "CONNECT_IPS",
+            "SCT",
+            ],
+        "eventHandler": {
+            onSuccess (payload) {
+                // hit merchant api for initiating verfication
+            console.log(payload);
+
+                $.ajax({
+                         url:"/payment",
+                        type:"POST",
+
+                        data:{
+                            token:payload.token,
+                            amount:payload.amount,
+                        },
+
+                    });
+            },
+            onError (error) {
+                console.log(error);
+            },
+            onClose () {
+                console.log('widget is closing');
+            }
+        }
+    };
+
+    var checkout = new KhaltiCheckout(config);
+    var btn = document.getElementById("payment-button");
+    btn.onclick = function () {
+        // minimum transaction amount must be 10, i.e 1000 in paisa.
+        checkout.show({amount: 2000});
+    }
+</script>
+</body>
+</html>
